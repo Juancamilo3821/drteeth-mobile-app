@@ -5,6 +5,9 @@ import 'package:front_end/main.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Screens/homePage.dart';
+import '../Screens/Urgency.dart';
+
 
 
 
@@ -326,14 +329,26 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
         onTap: (index) {
           setState(() {
             _selectedBottomIndex = index;
-            // Navegación futura aquí
           });
+
+          if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => HomePage()),
+            );
+          } else if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const Urgency()),
+            );
+          }
         },
+
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.warning_amber_outlined), label: 'Urgencias'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
-        ],
+        ],         // Aquí puedes agregar navegación para otros índices si deseas
       ),
     );
   }

@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../Services/disabilitiesService.dart';
+import '../Screens/Urgency.dart';
+import '../Screens/homePage.dart';
 
 class Disabilities {
   final String title;
@@ -175,6 +177,20 @@ class _DisabilitiesScreenState extends State<DisabilitiesScreen> {
               icon: Icon(Icons.warning_amber_outlined), label: 'Urgencias'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => HomePage()),
+            );
+          } else if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const Urgency()),
+            );
+          }
+          // Aquí puedes agregar más navegación si tienes otras vistas
+        },
       ),
     );
   }

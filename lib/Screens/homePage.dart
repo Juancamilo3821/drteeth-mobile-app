@@ -6,6 +6,7 @@ import 'package:front_end/Screens/Appointments.dart';
 import '../Services/appointmentService.dart';
 import '../Services/carruselService.dart';
 import 'package:front_end/Screens/Treatment.dart';
+import 'package:front_end/Screens/Urgency.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -313,7 +314,14 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
         onTap: (index) {
-          // TODO: manejar navegación real
+          // CAMBIO: Navegación al tocar ícono de "Urgencias"
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const Urgency()),
+            );
+          }
+          // Aquí puedes agregar navegación para otros índices si deseas
         },
       ),
     );

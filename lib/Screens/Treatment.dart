@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../Services/treatmentService.dart'; // Ajusta la ruta si es necesario
-
+import '../Services/treatmentService.dart'; 
+import '../Screens/Urgency.dart';
+import '../Screens/homePage.dart';
 class Treatment {
   final String title;
   final String description;
@@ -194,6 +195,20 @@ class _TreatmentsScreenState extends State<TreatmentsScreen> {
               icon: Icon(Icons.warning_amber_outlined), label: 'Urgencias'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => HomePage()),
+            );
+          } else if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const Urgency()),
+            );
+          }
+          // Aquí puedes agregar más navegación si tienes otras vistas
+        },
       ),
     );
   }
