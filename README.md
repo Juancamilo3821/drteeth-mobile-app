@@ -10,7 +10,7 @@
 - **HTTP Client** — Consumo de servicios REST
 - **Arquitectura basada en el patrón MVC (Modelo-Vista-Controlador)**
 - **Animaciones personalizadas** (Splash, navegación)
-- Backend: [Drteeth API (Node.js + Express)](https://github.com/tu_usuario/drteeth-api)
+- Backend: [Drteeth API (Node.js + Express)](https://github.com/Juancamilo3821/drteeth-api.git)
 
 ---
 
