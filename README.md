@@ -40,16 +40,28 @@ Esta separación facilita el mantenimiento, escalabilidad y claridad del código
 ---
 
 ## 🧭 Estructura del proyecto
-```
-![image](https://github.com/user-attachments/assets/10ee6447-3229-4bfe-8562-bb0ecea5306f)
 
+```
+lib/
+├── Screens/         # Pantallas principales de la app
+│   ├── Login.dart
+│   ├── Register.dart
+│   ├── Appointments.dart
+│   ├── Treatment.dart
+│   ├── Disabilities.dart
+│   └── Urgency.dart
+├── Services/        # Servicios para consumir la API
+├── Animations/      # Pantalla splash animada
+├── main.dart        # Punto de entrada
+```
 
 ---
 
-## ⚙️ Instalación y ejecución
+
+## Instalación y ejecución
 
 ```bash
-git clone https://github.com/tu_usuario/drteeth-mobile-app.git
+git clone [https://github.com/Juancamilo3821/drteeth-mobile-app.git]
 cd drteeth-mobile-app
 flutter pub get
 flutter run
@@ -59,11 +71,11 @@ flutter run
 
 ---
 
-## 📡 Conexión con el backend
+## Conexión con el backend
 
 Esta app está conectada a una API REST personalizada. Asegúrate de que el backend esté corriendo localmente en el puerto definido (por defecto `http://10.0.2.2:3000` para emuladores Android).
 
-Repositorio del backend 👉 [drteeth-api](https://github.com/tu_usuario/drteeth-api)
+Repositorio del backend [drteeth-api][https://github.com/Juancamilo3821/drteeth-api.git]
 
 ---
 
