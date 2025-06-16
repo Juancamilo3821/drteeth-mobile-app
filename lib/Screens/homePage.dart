@@ -7,6 +7,7 @@ import '../Services/appointmentService.dart';
 import '../Services/carruselService.dart';
 import 'package:front_end/Screens/Treatment.dart';
 import 'package:front_end/Screens/Urgency.dart';
+import '../Screens/AccountScreen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -320,6 +321,9 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(builder: (_) => const Urgency()),
             );
+          }
+          else if (index == 2){
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const AccountScreen()));
           }
           // Aquí puedes agregar navegación para otros índices si deseas
         },
