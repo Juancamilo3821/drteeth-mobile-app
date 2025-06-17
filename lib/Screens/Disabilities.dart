@@ -6,6 +6,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../Services/disabilitiesService.dart';
 import '../Screens/Urgency.dart';
 import '../Screens/homePage.dart';
+import '../Screens/AccountScreen.dart';
 
 class Disabilities {
   final String title;
@@ -187,6 +188,11 @@ class _DisabilitiesScreenState extends State<DisabilitiesScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const Urgency()),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AccountScreen()),
             );
           }
           // Aquí puedes agregar más navegación si tienes otras vistas

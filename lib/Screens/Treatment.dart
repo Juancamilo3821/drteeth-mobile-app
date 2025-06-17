@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../Services/treatmentService.dart'; 
 import '../Screens/Urgency.dart';
 import '../Screens/homePage.dart';
+import '../Screens/AccountScreen.dart';
+
 class Treatment {
   final String title;
   final String description;
@@ -206,6 +208,8 @@ class _TreatmentsScreenState extends State<TreatmentsScreen> {
               context,
               MaterialPageRoute(builder: (_) => const Urgency()),
             );
+          } else if (index == 2) {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const AccountScreen()));
           }
           // Aquí puedes agregar más navegación si tienes otras vistas
         },

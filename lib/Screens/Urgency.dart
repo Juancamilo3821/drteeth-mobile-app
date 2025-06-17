@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/Screens/AccountScreen.dart';
 import '../Screens/homePage.dart';
 
 class Urgency extends StatefulWidget {
@@ -187,7 +188,11 @@ class _UrgencyState extends State<Urgency> {
           if (index == 0) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
           }
+          else if (index == 2) {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const AccountScreen()));
+          }
         },
+        
       ),
     );
   }

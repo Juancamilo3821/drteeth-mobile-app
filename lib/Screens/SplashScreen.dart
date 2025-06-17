@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _onTapLogo() {
     setState(() {
-      _scale = 1.2;
+      _scale = 1.1;
       _showMessage = true;
     });
 
@@ -64,8 +64,8 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: 120,
-                width: 120,
+                height: 160,
+                width: 160,
                 child: Stack(
                   alignment: Alignment.center,
                   clipBehavior: Clip.none,
@@ -75,13 +75,27 @@ class _SplashScreenState extends State<SplashScreen> {
                       child: AnimatedScale(
                         duration: const Duration(milliseconds: 150),
                         scale: _scale,
-                        child: const CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Colors.cyan,
-                          child: Icon(
-                            Icons.mood, // cara feliz siempre
-                            color: Colors.black,
-                            size: 40,
+                        child: Container(
+                          width: 120,
+                          height: 120,
+                          decoration: const BoxDecoration(
+                            color: Colors.cyan,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'Assets/DrteethLogo.png',
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),
@@ -112,14 +126,14 @@ class _SplashScreenState extends State<SplashScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               const Text(
                 'DrTeeth Mobile',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Color(0xFF0E7490),
                 ),
               ),
               const SizedBox(height: 8),
@@ -132,7 +146,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: Colors.black54,
                 ),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 40),
               SizedBox(
                 width: 200,
                 child: ElevatedButton(
@@ -145,7 +159,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   ),
                   child: const Text(
-                    'Iniciar Sesion',
+                    'Iniciar Sesión',
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.bold,

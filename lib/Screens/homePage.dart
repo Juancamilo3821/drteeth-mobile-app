@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:front_end/Screens/Disabilities.dart';
+import 'package:front_end/Screens/Payments.dart';
 import 'package:intl/intl.dart';
 import 'package:front_end/Screens/Appointments.dart';
 import '../Services/appointmentService.dart';
@@ -175,7 +176,16 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-                _HomeButton(icon: Icons.payment, label: 'Pagos'),
+                _HomeButton(
+                  icon: Icons.payment,
+                  label: 'Pagos',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => PaymentsScreen()),
+                    );
+                  },
+                ),
                 _HomeButton(
                   icon: Icons.healing,
                   label: 'Tratamientos',

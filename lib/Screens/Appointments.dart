@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/Screens/AccountScreen.dart';
 import 'package:intl/intl.dart';
 import '../Services/appointmentService.dart';
 import 'package:front_end/main.dart';
@@ -340,6 +341,12 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const Urgency()),
+            );
+          }
+           else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AccountScreen()),
             );
           }
         },
