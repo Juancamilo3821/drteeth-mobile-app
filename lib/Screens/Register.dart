@@ -1,8 +1,8 @@
-// register.dart
 import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:front_end/Screens/SplashScreen.dart';
 import 'package:front_end/Services/registerService.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,7 +25,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController passwordController = TextEditingController();
 
   String? selectedDocType;
-
   bool acceptedTerms = false;
   bool passwordVisible = false;
 
@@ -151,11 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 decoration: _inputDecoration("Contraseña", "").copyWith(
                   suffixIcon: IconButton(
                     icon: Icon(passwordVisible ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        passwordVisible = !passwordVisible;
-                      });
-                    },
+                    onPressed: () => setState(() => passwordVisible = !passwordVisible),
                   ),
                 ),
                 validator: (value) => value!.isEmpty ? 'Ingrese su contraseña' : null,
@@ -198,12 +193,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       password: passwordController.text.trim(),
                     );
 
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ResultSplashScreen(success: result['ok']),
-                      ),
-                    );
+                    if (result['ok']) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Registro exitoso. Inicia sesión para continuar.'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+
+                      await Future.delayed(const Duration(seconds: 2));
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SplashScreen()),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(result['message'] ?? 'Error en el registro'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   } else if (!acceptedTerms) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Debes aceptar los términos')),
@@ -213,9 +224,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(48),
                   backgroundColor: const Color(0xFF00ACC1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 ),
                 child: const Text("Registrarse", style: TextStyle(fontWeight: FontWeight.bold)),
               ),

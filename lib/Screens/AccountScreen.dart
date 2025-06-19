@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/Screens/Urgency.dart';
-import '../Screens/homePage.dart';
+import 'package:front_end/Screens/homePage.dart';
+import 'package:front_end/Screens/SplashScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -90,8 +92,24 @@ class AccountScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             OutlinedButton.icon(
-              onPressed: () {
-                // lógica cerrar sesión
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('token');
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Sesión cerrada correctamente'),
+                    backgroundColor: Colors.teal,
+                  ),
+                );
+
+                await Future.delayed(const Duration(seconds: 1));
+
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SplashScreen()),
+                  (route) => false,
+                );
               },
               icon: const Icon(Icons.logout),
               label: const Text('Cerrar sesión'),
@@ -117,8 +135,7 @@ class AccountScreen extends StatelessWidget {
         onTap: (index) {
           if (index == 0) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
-          }
-          else if (index == 1){
+          } else if (index == 1) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => const Urgency()));
           }
         },

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginService {
   Future<Map<String, dynamic>> login({
@@ -22,8 +23,16 @@ class LoginService {
 
       final data = jsonDecode(response.body);
 
-      if (response.statusCode == 200 && data['user'] != null) {
-        return {'ok': true, 'user': data['user']};
+      if (response.statusCode == 200 && data['token'] != null) {
+        // Guardar el token en local storage
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', data['token']);
+        print('✅ Token guardado localmente');
+
+        return {
+          'ok': true,
+          'user': data['user'],
+        };
       } else {
         return {
           'ok': false,
