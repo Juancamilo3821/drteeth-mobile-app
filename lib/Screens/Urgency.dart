@@ -181,7 +181,7 @@ class _UrgencyState extends State<Urgency> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Urgencias'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Mi Cuenta'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
         currentIndex: 1,
         onTap: (index) {

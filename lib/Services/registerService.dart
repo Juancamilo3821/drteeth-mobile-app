@@ -5,6 +5,8 @@ class RegisterService {
   Future<Map<String, dynamic>> register({
     required String nombre,
     required String apellidos,
+    required String tipoDocumento,
+    required String numeroDocumento,
     required String correo,
     required String telefono,
     required String password,
@@ -16,6 +18,8 @@ class RegisterService {
       body: jsonEncode({
         'nombre': nombre,
         'apellidos': apellidos,
+        'tipoDocumento': tipoDocumento,
+        'numeroDocumento': numeroDocumento,
         'correo': correo,
         'telefono': telefono,
         'password': password,

@@ -187,6 +187,20 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 30),
+              TextButton(
+                onPressed: () {
+                  // Aquí luego se agregará redirección a Telegram
+                },
+                child: const Text(
+                  '¿No has agendado tu cita?',
+                  style: TextStyle(
+                    color: Colors.teal,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

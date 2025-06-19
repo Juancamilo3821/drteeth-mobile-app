@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import '../Screens/Urgency.dart';
 import '../Screens/homePage.dart';
 import '../Screens/AccountScreen.dart';
+import '../Services/paymentService.dart';
+import '../Screens/register_payment_screen.dart';
 
 class PaymentsScreen extends StatefulWidget {
   const PaymentsScreen({super.key});
@@ -16,53 +18,44 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
 
   final currencyFormatter = NumberFormat.currency(locale: 'es_CO', symbol: '\$');
 
-  final List<Map<String, dynamic>> pendingPayments = [
-    {
-      'title': 'Tratamiento de ortodoncia',
-      'desc': 'Primera cuota del tratamiento de ortodoncia',
-      'amount': 250000,
-      'dueDate': '30 de abril, 2025',
-    },
-    {
-      'title': 'Limpieza dental',
-      'desc': 'Servicio de limpieza dental profesional',
-      'amount': 80000,
-      'dueDate': '25 de abril, 2025',
-    },
-  ];
+  List<Map<String, dynamic>> pendingPayments = [];
+  List<Map<String, dynamic>> paidPayments = [];
 
-  final List<Map<String, dynamic>> paidPayments = [
-    {
-      'title': 'Consulta general',
-      'desc': 'Evaluación odontológica inicial',
-      'amount': 60000,
-      'paidDate': '10 de abril, 2025',
-    },
-    {
-      'title': 'Radiografía panorámica',
-      'desc': 'Examen completo',
-      'amount': 100000,
-      'paidDate': '5 de abril, 2025',
-    },
-    {
-      'title': 'Control de ortodoncia',
-      'desc': 'Control mensual de brackets',
-      'amount': 70000,
-      'paidDate': '30 de marzo, 2025',
-    },
-    {
-      'title': 'Fluorización',
-      'desc': 'Aplicación de flúor dental',
-      'amount': 40000,
-      'paidDate': '15 de marzo, 2025',
-    },
-    {
-      'title': 'Sellantes',
-      'desc': 'Sellado preventivo de molares',
-      'amount': 90000,
-      'paidDate': '1 de marzo, 2025',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchPayments();
+  }
+
+  Future<void> _fetchPayments() async {
+    final result = await PaymentService().fetchPayments();
+    final dateFormatter = DateFormat("d 'de' MMMM 'de' y", 'es_CO');
+
+    List<Map<String, dynamic>> mapPagos(List<Map<String, dynamic>> pagos, bool esPagado) {
+      return pagos.map((p) {
+        String formattedDate = '';
+        try {
+          final parsedDate = DateTime.parse(p['fecha_pago']);
+          formattedDate = dateFormatter.format(parsedDate);
+        } catch (e) {
+          formattedDate = 'Fecha inválida';
+        }
+
+        return {
+          'title': p['titulo'] ?? '',
+          'desc': p['descripcion'] ?? '',
+          'amount': double.tryParse(p['monto'].toString()) ?? 0.0,
+          'dueDate': formattedDate,
+          'paidDate': formattedDate,
+        };
+      }).toList();
+    }
+
+    setState(() {
+      pendingPayments = mapPagos(result['pending']!, false);
+      paidPayments = mapPagos(result['paid']!, true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +110,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Urgencias'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Mi Cuenta'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
         onTap: (index) {
           if (index == 0) {
@@ -158,9 +151,21 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       ),
       child: Row(
         children: [
-          _resumenItem('Pendiente', currencyFormatter.format(330000), const Color(0xFFE3FBF9)),
+          _resumenItem(
+            'Pendiente',
+            currencyFormatter.format(
+              pendingPayments.fold<double>(0, (sum, p) => sum + (p['amount'] as double? ?? 0.0)),
+            ),
+            const Color(0xFFE3FBF9),
+          ),
           const SizedBox(width: 12),
-          _resumenItem('Pagado', currencyFormatter.format(150000), const Color(0xFFE7FBE7)),
+          _resumenItem(
+            'Pagado',
+            currencyFormatter.format(
+              paidPayments.fold<double>(0, (sum, p) => sum + (p['amount'] as double? ?? 0.0)),
+            ),
+            const Color(0xFFE7FBE7),
+          ),
         ],
       ),
     );
@@ -238,10 +243,10 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     );
   }
 
-  Widget _buildCard({
+    Widget _buildCard({
     required String title,
     required String desc,
-    required int amount,
+    required double amount,
     required String dateLabel,
     required bool showButton,
   }) {
@@ -277,14 +282,24 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 ),
                 if (showButton)
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => RegisterPaymentScreen(
+                            serviceTitle: title,
+                            amount: amount,
+                          ),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF00B7E2),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     ),
                     child: const Text('Pagar ahora', style: TextStyle(color: Colors.white)),
-                  )
+                  ),
               ],
             )
           ],

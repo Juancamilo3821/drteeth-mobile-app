@@ -1,3 +1,4 @@
+// register.dart
 import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +19,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController docNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  String? selectedDocType;
 
   bool acceptedTerms = false;
   bool passwordVisible = false;
@@ -66,17 +70,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               const SizedBox(height: 10),
               const Center(
-                child: Text(
-                  "Crear Cuenta",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
+                child: Text("Crear Cuenta", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 6),
               const Center(
-                child: Text(
-                  "Regístrate para acceder a todos los servicios",
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
+                child: Text("Regístrate para acceder a todos los servicios", style: TextStyle(fontSize: 14, color: Colors.black54)),
               ),
               const SizedBox(height: 30),
               Row(
@@ -94,6 +92,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: lastNameController,
                       decoration: _inputDecoration("Apellido", "Perez"),
                       validator: (value) => value!.isEmpty ? 'Ingrese su apellido' : null,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text("Documento de Identidad", style: TextStyle(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedDocType,
+                      hint: const Text("CC"),
+                      underline: const SizedBox(),
+                      items: const [
+                        DropdownMenuItem(value: 'CC', child: Text('CC')),
+                        DropdownMenuItem(value: 'CE', child: Text('CE')),
+                        DropdownMenuItem(value: 'PA', child: Text('PA')),
+                        DropdownMenuItem(value: 'OT', child: Text('OT')),
+                      ],
+                      onChanged: (value) => setState(() => selectedDocType = value),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      controller: docNumberController,
+                      decoration: _inputDecoration("", "1097910694"),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) => value!.isEmpty ? 'Ingrese número de documento' : null,
                     ),
                   ),
                 ],
@@ -131,11 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   Checkbox(
                     value: acceptedTerms,
-                    onChanged: (value) {
-                      setState(() {
-                        acceptedTerms = value!;
-                      });
-                    },
+                    onChanged: (value) => setState(() => acceptedTerms = value!),
                   ),
                   Expanded(
                     child: RichText(
@@ -145,12 +175,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         children: [
                           TextSpan(
                             text: "Términos y Condiciones",
-                            style: const TextStyle(
-                              color: Color(0xFF00ACC1),
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = _openTermsPDF,
+                            style: const TextStyle(color: Color(0xFF00ACC1), decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()..onTap = _openTermsPDF,
                           ),
                         ],
                       ),
@@ -165,6 +191,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     final result = await RegisterService().register(
                       nombre: nameController.text.trim(),
                       apellidos: lastNameController.text.trim(),
+                      tipoDocumento: selectedDocType ?? 'CC',
+                      numeroDocumento: docNumberController.text.trim(),
                       correo: emailController.text.trim(),
                       telefono: phoneController.text.trim(),
                       password: passwordController.text.trim(),
@@ -189,10 +217,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: const Text(
-                  "Registrarse",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+                child: const Text("Registrarse", style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 16),
               Center(
@@ -203,14 +228,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       TextSpan(
                         text: 'Inicia sesión',
-                        style: const TextStyle(
-                          color: Color(0xFF00ACC1),
-                          fontWeight: FontWeight.w500,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.pop(context);
-                          },
+                        style: const TextStyle(color: Color(0xFF00ACC1), fontWeight: FontWeight.w500),
+                        recognizer: TapGestureRecognizer()..onTap = () => Navigator.pop(context),
                       ),
                     ],
                   ),

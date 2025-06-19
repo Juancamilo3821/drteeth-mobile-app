@@ -9,7 +9,7 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mi Cuenta'),
+        title: const Text('Perfil'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.teal,
         elevation: 0,
@@ -112,7 +112,7 @@ class AccountScreen extends StatelessWidget {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.warning), label: 'Urgencias'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Mi Cuenta'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
         onTap: (index) {
           if (index == 0) {
