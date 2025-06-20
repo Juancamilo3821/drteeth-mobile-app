@@ -190,7 +190,7 @@ class _SplashScreenState extends State<SplashScreen> {
               const SizedBox(height: 30),
               TextButton(
                 onPressed: () {
-                  // Aquí luego se agregará redirección a Telegram
+                  //agregar la redireccion a telegram
                 },
                 child: const Text(
                   '¿No has agendado tu cita?',

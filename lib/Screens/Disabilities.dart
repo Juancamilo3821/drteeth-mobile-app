@@ -195,7 +195,6 @@ class _DisabilitiesScreenState extends State<DisabilitiesScreen> {
               MaterialPageRoute(builder: (_) => const AccountScreen()),
             );
           }
-          // Aquí puedes agregar más navegación si tienes otras vistas
         },
       ),
     );

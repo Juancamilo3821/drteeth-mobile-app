@@ -11,7 +11,7 @@ class PaymentService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        print('📦 Datos recibidos del backend: $data');
+        print('Datos recibidos del backend: $data');
 
         final List<dynamic> pendientes = data['pendientes'] ?? [];
         final List<dynamic> pagados = data['pagados'] ?? [];
@@ -21,14 +21,14 @@ class PaymentService {
           'paid': List<Map<String, dynamic>>.from(pagados),
         };
       } else {
-        print('❌ Error del servidor: ${response.statusCode}');
+        print('Error del servidor: ${response.statusCode}');
         return {
           'pending': [],
           'paid': [],
         };
       }
     } catch (e) {
-      print('❌ Error al obtener pagos: $e');
+      print('Error al obtener pagos: $e');
       return {
         'pending': [],
         'paid': [],

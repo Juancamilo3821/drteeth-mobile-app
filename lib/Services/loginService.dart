@@ -18,8 +18,8 @@ class LoginService {
         }),
       );
 
-      print('🔍 Status code: ${response.statusCode}');
-      print('📦 Response body: ${response.body}');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       final data = jsonDecode(response.body);
 
@@ -27,7 +27,7 @@ class LoginService {
         // Guardar el token en local storage
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', data['token']);
-        print('✅ Token guardado localmente');
+        print('Token guardado localmente');
 
         return {
           'ok': true,
@@ -40,7 +40,7 @@ class LoginService {
         };
       }
     } catch (e) {
-      print('❌ Error en login: $e');
+      print('Error en login: $e');
       return {
         'ok': false,
         'message': 'Error de conexión al servidor',

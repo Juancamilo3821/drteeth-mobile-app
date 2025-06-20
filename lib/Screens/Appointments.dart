@@ -287,7 +287,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
               ),
             ),
 
-            // Tabs personalizados
+            // Tabs 
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(6),
@@ -355,7 +355,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
           BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.warning_amber_outlined), label: 'Urgencias'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
-        ],         // Aquí puedes agregar navegación para otros índices si deseas
+        ],
       ),
     );
   }

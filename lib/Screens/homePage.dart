@@ -325,7 +325,6 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
         onTap: (index) {
-          // CAMBIO: Navegación al tocar ícono de "Urgencias"
           if (index == 1) {
             Navigator.push(
               context,
@@ -335,14 +334,12 @@ class _HomePageState extends State<HomePage> {
           else if (index == 2){
             Navigator.push(context, MaterialPageRoute(builder: (_) => const AccountScreen()));
           }
-          // Aquí puedes agregar navegación para otros índices si deseas
         },
       ),
     );
   }
 }
 
-// ------------------------ COMPONENTES AUXILIARES ------------------------
 
 class _HomeButton extends StatelessWidget {
   final IconData icon;

@@ -36,11 +36,13 @@ class Treatment {
       title: json['descripcion'] ?? '',
       description: json['descripcion'] ?? '',
       status: json['estado'] ?? '',
-      nextAppointment: null, // Se puede actualizar si lo agregas en el backend
+      nextAppointment: null, 
       progress: json['estado'] == 'En curso' ? 0.5 : null,
       medicamento: json['medicamento']?['nombre'],
       dosis: json['medicamento']?['dosis'],
-      frecuenciaHoras: json['medicamento']?['frecuenciaHoras'],
+      frecuenciaHoras: json['medicamento']?['frecuenciaHoras'] != null
+        ? int.tryParse(json['medicamento']!['frecuenciaHoras'].toString())
+        : null,
       fechaInicio: json['fecha_inicio'] != null
           ? DateTime.tryParse(json['fecha_inicio'])
           : null,
@@ -56,7 +58,6 @@ class Treatment {
   }
 
   String _formatDate(DateTime date) {
-    // Ej: 15 de mayo, 2025
     final months = [
       'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
       'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
@@ -211,7 +212,6 @@ class _TreatmentsScreenState extends State<TreatmentsScreen> {
           } else if (index == 2) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => const AccountScreen()));
           }
-          // Aquí puedes agregar más navegación si tienes otras vistas
         },
       ),
     );

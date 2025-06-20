@@ -48,7 +48,7 @@ class AppointmentService {
         throw Exception('Error al cargar las citas');
       }
     } catch (e) {
-      print('❌ Error al cargar citas: $e');
+      print('Error al cargar citas: $e');
       return {
         'upcoming': [],
         'history': [],
