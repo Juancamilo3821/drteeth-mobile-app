@@ -13,14 +13,14 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicializa formato de fechas en español
+  // Inicializa fecha en español
   await initializeDateFormatting('es', null);
 
-  // Inicializa zona horaria para notificaciones programadas
+  // Inicializa zonas horarias
   tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation('America/Bogota')); // Ajusta según tu zona
+  tz.setLocalLocation(tz.getLocation('America/Bogota'));
 
-  // Configuración de inicialización para Android
+  // Configuración de inicialización
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -28,7 +28,13 @@ void main() async {
     android: initializationSettingsAndroid,
   );
 
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    // En caso futuro de necesitar respuesta a la notificación:
+    // onDidReceiveNotificationResponse: (NotificationResponse response) {
+    //   // Manejo de la acción al tocar la notificación
+    // },
+  );
 
   runApp(const DrTeethApp());
 }

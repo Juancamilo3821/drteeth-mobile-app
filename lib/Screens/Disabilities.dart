@@ -93,32 +93,6 @@ class _DisabilitiesScreenState extends State<DisabilitiesScreen> {
     }
   }
 
-  Future<void> _showNotification(String title, String body) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'disabilities_channel',
-      'Incapacidades',
-      channelDescription: 'Canal para notificaciones de incapacidades',
-      importance: Importance.max,
-      priority: Priority.high,
-      showWhen: false,
-    );
-
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      title,
-      body,
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 2)),
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
-  }
-
   Future<List<Disabilities>> fetchDisabilities() async {
     final service = DisabilitiesService();
     final List<dynamic> data = await service.getDisabilities();
@@ -337,11 +311,7 @@ class _DisabilitiesScreenState extends State<DisabilitiesScreen> {
                 _buildActionButton(
                   icon: Icons.remove_red_eye_outlined,
                   label: 'Ver',
-                  onPressed: () {
-                    _showNotification(d.title,
-                        'Incapacidad de ${d.durationDays} días con estado ${d.estado}');
-                    _showDetailsBottomSheet(d);
-                  },
+                  onPressed: () => _showDetailsBottomSheet(d),
                 ),
                 const SizedBox(width: 12),
                 _buildActionButton(
@@ -451,40 +421,54 @@ class _DisabilitiesScreenState extends State<DisabilitiesScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.5,
-          minChildSize: 0.3,
-          maxChildSize: 0.85,
+          initialChildSize: 0.55,
+          minChildSize: 0.4,
+          maxChildSize: 0.9,
           expand: false,
           builder: (_, scrollController) {
-            return SafeArea(
-              child: SingleChildScrollView(
-                controller: scrollController,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(d.title,
-                        style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.teal)),
-                    const SizedBox(height: 12),
-                    _infoRow(Icons.calendar_today,
-                        'Desde: ${formatDate(d.fromDate)}'),
-                    _infoRow(Icons.calendar_today_outlined,
-                        'Hasta: ${formatDate(d.toDate)}'),
-                    _infoRow(Icons.timer_outlined,
-                        'Duración: ${d.durationDays} días'),
-                    _infoRow(Icons.info_outline,
-                        'Diagnóstico: ${d.diagnosis}'),
-                    _infoRow(Icons.check_circle_outline,
-                        'Estado: ${d.estado}'),
-                  ],
-                ),
+            return SingleChildScrollView(
+              controller: scrollController,
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade400,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    d.title,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _infoRow(Icons.calendar_today, 'Desde: ${formatDate(d.fromDate)}'),
+                  const SizedBox(height: 10),
+                  _infoRow(Icons.calendar_today_outlined, 'Hasta: ${formatDate(d.toDate)}'),
+                  const SizedBox(height: 10),
+                  _infoRow(Icons.timer_outlined, 'Duración: ${d.durationDays} días'),
+                  const SizedBox(height: 10),
+                  _infoRow(Icons.info_outline, 'Diagnóstico: ${d.diagnosis}'),
+                  const SizedBox(height: 10),
+                  _infoRow(
+                    d.estado == 'VIGENTE' ? Icons.check_circle : Icons.cancel_outlined,
+                    'Estado: ${d.estado}',
+                  ),
+                ],
               ),
             );
           },

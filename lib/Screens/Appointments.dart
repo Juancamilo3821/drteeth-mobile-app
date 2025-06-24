@@ -9,9 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Screens/homePage.dart';
 import '../Screens/Urgency.dart';
 
-
-
-
 class Appointment {
   final String title;
   final String number;
@@ -36,20 +33,20 @@ class Appointment {
   });
 
   factory Appointment.fromJson(Map<String, dynamic> json) {
-  final doctor = json['doctor'] ?? {};
+    final doctor = json['doctor'] ?? {};
 
-  return Appointment(
-    title: json['titulo'] ?? '',
-    number: json['id']?.toString() ?? '0', 
-    fecha_hora: json['fecha_hora'] ?? '',
-    location: doctor['direccion_consultorio'] ?? '',
-    doctor: doctor['nombre'] ?? '',
-    specialty: doctor['especialidad'] ?? '',
-    duration: '${json['duracion_estimada'] ?? 30} minutos',
-    confirmed: (json['estado'] == 'confirmada'),
-    reminder: false,
-  );
-}
+    return Appointment(
+      title: json['titulo'] ?? '',
+      number: json['id']?.toString() ?? '0',
+      fecha_hora: json['fecha_hora'] ?? '',
+      location: doctor['direccion_consultorio'] ?? '',
+      doctor: doctor['nombre'] ?? '',
+      specialty: doctor['especialidad'] ?? '',
+      duration: '${json['duracion_estimada'] ?? 30} minutos',
+      confirmed: (json['estado'] == 'confirmada'),
+      reminder: false,
+    );
+  }
 }
 
 class HistoryAppointment {
@@ -66,16 +63,15 @@ class HistoryAppointment {
   });
 
   factory HistoryAppointment.fromJson(Map<String, dynamic> json) {
-  final doctor = json['doctor'] ?? {};
+    final doctor = json['doctor'] ?? {};
 
-  return HistoryAppointment(
-    title: json['titulo'] ?? '',
-    fecha_hora: json['fecha_hora'] ?? '',
-    doctor: doctor['nombre'] ?? '',
-    location: doctor['direccion_consultorio'] ?? '',
-  );
-}
-
+    return HistoryAppointment(
+      title: json['titulo'] ?? '',
+      fecha_hora: json['fecha_hora'] ?? '',
+      doctor: doctor['nombre'] ?? '',
+      location: doctor['direccion_consultorio'] ?? '',
+    );
+  }
 }
 
 class AppointmentsScreen extends StatefulWidget {
@@ -97,91 +93,36 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
   bool isLoading = true;
 
   Future<void> _toggleReminder(bool value, Appointment appointment) async {
-  final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
 
-  final int notificationId = int.tryParse(
-        appointment.number.replaceAll(RegExp(r'\D'), ''),
-      ) ??
-      appointment.number.hashCode.abs();
+    final int baseId = int.tryParse(
+          appointment.number.replaceAll(RegExp(r'\D'), ''),
+        ) ??
+        appointment.number.hashCode.abs();
 
-  if (value) {
-    DateTime? appointmentTime = DateTime.tryParse(appointment.fecha_hora);
+    final DateTime? appointmentTime = DateTime.tryParse(appointment.fecha_hora);
 
-    if (appointmentTime == null) {
-      print('Fecha inválida para la cita: ${appointment.fecha_hora}');
+    if (appointmentTime == null || appointmentTime.isBefore(DateTime.now())) {
+      print('Fecha inválida o pasada');
       return;
     }
 
-    final DateTime now = DateTime.now();
-
-    if (appointmentTime.isBefore(now)) {
-      print('No se puede programar recordatorio para una cita pasada.');
-      return;
-    }
-
-    final tz.TZDateTime scheduledDate = tz.TZDateTime.from(
-      appointmentTime.subtract(const Duration(minutes: 30)),
+    final tz.TZDateTime time24h = tz.TZDateTime.from(
+      appointmentTime.subtract(const Duration(hours: 24)),
       tz.local,
     );
 
-    if (scheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
-      print('El tiempo de recordatorio ya pasó.');
-      return;
-    }
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      notificationId,
-      'Recordatorio de cita: ${appointment.title}',
-      'Tienes una cita con ${appointment.doctor} el ${DateFormat("d 'de' MMMM - h:mm a", 'es').format(appointmentTime)}',
-      scheduledDate,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'drteeth_channel',
-          'Recordatorios de citas',
-          channelDescription: 'Notificaciones para recordar tus citas',
-          importance: Importance.max,
-          priority: Priority.high,
-        ),
-      ),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.dateAndTime,
+    final tz.TZDateTime time3h = tz.TZDateTime.from(
+      appointmentTime.subtract(const Duration(hours: 3)),
+      tz.local,
     );
 
-    await prefs.setBool('reminder_${appointment.number}', true);
-
-    if (mounted) {
-      setState(() {
-        appointment.reminder = true;
-      });
-    }
-  } else {
-    await flutterLocalNotificationsPlugin.cancel(notificationId);
-    await prefs.setBool('reminder_${appointment.number}', false);
-
-    if (mounted) {
-      setState(() {
-        appointment.reminder = false;
-      });
-    }
-  }
-
-  print('Notification ID: $notificationId'); 
-
-  if (value) {
-    DateTime? appointmentTime = DateTime.tryParse(appointment.fecha_hora);
-    if (appointmentTime != null) {
-      final tz.TZDateTime scheduledDate = tz.TZDateTime.from(
-        appointmentTime.subtract(const Duration(minutes: 30)),
-        tz.local,
-      );
-
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        notificationId,
-        'Recordatorio de cita: ${appointment.title}',
-        'Tienes una cita con ${appointment.doctor} el ${DateFormat("d 'de' MMMM - h:mm a", 'es').format(appointmentTime)}',
-        scheduledDate,
+    if (value) {
+      // Enviar notificación inmediata al activar
+      await flutterLocalNotificationsPlugin.show(
+        baseId,
+        'Recordatorio activado',
+        'Se activaron recordatorios para tu cita con ${appointment.doctor}',
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'drteeth_channel',
@@ -191,16 +132,62 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
             priority: Priority.high,
           ),
         ),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dateAndTime,
       );
+
+      if (time24h.isAfter(tz.TZDateTime.now(tz.local))) {
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+          baseId + 1,
+          'Recordatorio (24h antes): ${appointment.title}',
+          'Cita con ${appointment.doctor} el ${DateFormat("d 'de' MMMM - h:mm a", 'es').format(appointmentTime)}',
+          time24h,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'drteeth_channel',
+              'Recordatorios de citas',
+              channelDescription: 'Notificaciones para recordar tus citas',
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+          ),
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.dateAndTime,
+        );
+      }
+
+      if (time3h.isAfter(tz.TZDateTime.now(tz.local))) {
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+          baseId + 2,
+          'Recordatorio (3h antes): ${appointment.title}',
+          'Cita con ${appointment.doctor} a las ${DateFormat("h:mm a", 'es').format(appointmentTime)}',
+          time3h,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'drteeth_channel',
+              'Recordatorios de citas',
+              channelDescription: 'Notificaciones para recordar tus citas',
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+          ),
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.dateAndTime,
+        );
+      }
+
+      await prefs.setBool('reminder_${appointment.number}', true);
+      if (mounted) setState(() => appointment.reminder = true);
+    } else {
+      await flutterLocalNotificationsPlugin.cancel(baseId);
+      await flutterLocalNotificationsPlugin.cancel(baseId + 1);
+      await flutterLocalNotificationsPlugin.cancel(baseId + 2);
+      await prefs.setBool('reminder_${appointment.number}', false);
+      if (mounted) setState(() => appointment.reminder = false);
     }
-  } else {
-    await flutterLocalNotificationsPlugin.cancel(notificationId);
   }
-}
 
 
   @override

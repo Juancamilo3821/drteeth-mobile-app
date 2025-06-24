@@ -9,6 +9,7 @@ import '../Services/carruselService.dart';
 import 'package:front_end/Screens/Treatment.dart';
 import 'package:front_end/Screens/Urgency.dart';
 import '../Screens/AccountScreen.dart';
+import '../Services/userService.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,6 +21,8 @@ class _HomePageState extends State<HomePage> {
   int _currentPage = 0;
   late Timer _carouselTimer;
 
+  Map<String, dynamic>? user;
+
   List<Map<String, String>> healthTips = [];
   List<Appointment> _nextAppointments = [];
   bool _loadAppointments = true;
@@ -27,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _fetchUserProfile();
     _cargarImagenesRemotas();
     _startAutoScroll();
     _fetchNextAppointments();
@@ -106,6 +110,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+    Future<void> _fetchUserProfile() async {
+    final data = await UserService().getUserProfile();
+    setState(() {
+      user = data;
+    });
+  }
+
+
   void _startAutoScroll() {
     _carouselTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       if (healthTips.isEmpty) return;
@@ -143,10 +155,11 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Bienvenido, Juan',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            Text(
+              'Bienvenido, ${user?['nombre']?.split(' ').first ?? ''}',
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
+
             const SizedBox(height: 16),
 
             GridView.count(

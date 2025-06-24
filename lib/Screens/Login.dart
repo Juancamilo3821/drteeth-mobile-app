@@ -48,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontFamily: 'Inter',
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 6),
@@ -135,7 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: const Text(
                   "Iniciar Sesión",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),

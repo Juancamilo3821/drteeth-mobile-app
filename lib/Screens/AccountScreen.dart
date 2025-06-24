@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:front_end/Screens/Urgency.dart';
 import 'package:front_end/Screens/homePage.dart';
 import 'package:front_end/Screens/SplashScreen.dart';
+import 'package:front_end/Screens/personalInformation.dart';
+import 'package:front_end/Screens/editInformation.dart';
 import 'package:front_end/Services/userService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:front_end/Screens/faqScreen.dart';
+import 'package:front_end/Screens/privacyScreen.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -15,6 +19,15 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   Map<String, dynamic>? user;
   bool isLoading = true;
+
+  final List<String> _avatars = [
+    '', // default
+    'Assets/1.png',
+    'Assets/2.png',
+    'Assets/3.png',
+    'Assets/4.png',
+    'Assets/5.png',
+  ];
 
   @override
   void initState() {
@@ -32,6 +45,20 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final int avatarIndex = (user?['avatar'] ?? 0);
+    final bool hasValidAvatar = avatarIndex > 0 && avatarIndex < _avatars.length;
+
+    final Widget avatarWidget = hasValidAvatar
+        ? CircleAvatar(
+            radius: 30,
+            backgroundImage: AssetImage(_avatars[avatarIndex]),
+          )
+        : const CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.teal,
+            child: Icon(Icons.person, color: Colors.white, size: 30),
+          );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
@@ -55,46 +82,79 @@ class _AccountScreenState extends State<AccountScreen> {
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
-                          const CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.teal,
-                            child: Icon(Icons.person, color: Colors.white, size: 30),
-                          ),
+                          avatarWidget,
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                      '${user?['nombre'] ?? ''} ${user?['apellidos'] ?? ''}',
-                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
+                                  '${user?['nombre'] ?? ''} ${user?['apellidos'] ?? ''}',
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
                                 Text(user?['correo'] ?? 'correo@ejemplo.com', style: const TextStyle(color: Colors.grey)),
                                 Text('+57 ${user?['telefono'] ?? '000 000 0000'}', style: const TextStyle(color: Colors.grey)),
                               ],
                             ),
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => EditInformationScreen(user: user!),
+                                ),
+                              );
+                              if (result == true) {
+                                fetchUserProfile();
+                              }
+                            },
                             child: const Text('Editar'),
-                          )
+                          ),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 24),
                   const _SectionTitle(title: 'Configuración'),
 
-                  _SettingTile(icon: Icons.person, title: 'Información personal', onTap: () {}),
-                  _SettingTile(icon: Icons.settings, title: 'Configuración general', onTap: () {}),
-                  _SettingSwitch(title: 'Inicio de sesión biométrico', value: true, onChanged: (v) {}),
+                  _SettingTile(
+                    icon: Icons.person,
+                    title: 'Información personal',
+                    onTap: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const PersonalInformation()),
+                      );
+                      if (result == true) {
+                        // Recargar el perfil porque se modificó desde PersonalInformation > EditInformation
+                        await fetchUserProfile();
+                      }
+                    },
+                  ),
 
                   const SizedBox(height: 24),
                   const _SectionTitle(title: 'Ayuda y soporte'),
 
-                  _SettingTile(icon: Icons.help_outline, title: 'Preguntas frecuentes', onTap: () {}),
-                  _SettingTile(icon: Icons.privacy_tip_outlined, title: 'Políticas de privacidad', onTap: () {}),
+                  _SettingTile(
+                    icon: Icons.question_answer,
+                    title: 'Preguntas frecuentes',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => FAQScreen()),
+                      );
+                    },
+                  ),
+                  _SettingTile(
+                    icon: Icons.privacy_tip_outlined, 
+                    title: 'Políticas de privacidad', 
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => PrivacyPolicyScreen()),
+                      );
+                    }),
 
                   const SizedBox(height: 24),
                   OutlinedButton.icon(

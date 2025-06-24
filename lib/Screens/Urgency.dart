@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/Screens/AccountScreen.dart';
 import '../Screens/homePage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Urgency extends StatefulWidget {
   const Urgency({super.key});
@@ -35,6 +36,17 @@ class _UrgencyState extends State<Urgency> {
         ],
       ),
     );
+  }
+
+  Future<void> _llamarNumeroEmergencia() async {
+    const telefono = 'tel:3157103471';
+    if (await canLaunchUrl(Uri.parse(telefono))) {
+      await launchUrl(Uri.parse(telefono));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo iniciar la llamada')),
+      );
+    }
   }
 
   @override
@@ -83,8 +95,7 @@ class _UrgencyState extends State<Urgency> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: ElevatedButton.icon(
-                        onPressed: () {
-                        },
+                        onPressed: _llamarNumeroEmergencia,
                         icon: const Icon(Icons.call, color: Colors.white),
                         label: const Text(
                           'Llamar ahora',
@@ -191,7 +202,6 @@ class _UrgencyState extends State<Urgency> {
             Navigator.push(context, MaterialPageRoute(builder: (_) => const AccountScreen()));
           }
         },
-        
       ),
     );
   }
